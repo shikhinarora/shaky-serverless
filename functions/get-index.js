@@ -34,18 +34,22 @@ function* getRestaurants(event) {
 
   aws4.sign(opts);
 
-  return (yield http
+  let httpReq = http
     .get(restaurantsApiRoot)
     .set('Host', opts.headers['Host'])
     .set('X-Amz-Date', opts.headers['X-Amz-Date'])
-    .set('Authorization', opts.headers['Authorization'])
-    .set('X-Amz-Security-Token', opts.headers['X-Amz-Security-Token'] ? opts.headers['X-Amz-Security-Token'] : '')
-  ).body;
+    .set('Authorization', opts.headers['Authorization']);
+
+  if (opts.headers['X-Amz-Security-Token']) {
+    httpReq.set('X-Amz-Security-Token', opts.headers['X-Amz-Security-Token']);
+  }
+
+  return (yield httpReq).body;
 }
 
-module.exports.handler = co.wrap(function* (event, context) {
+module.exports.handler = co.wrap(function* (event, context) {console.log('function' + '-----' + 'start');
   let template = yield loadHtml();  
-  let restaurants = yield getRestaurants(event);
+  let restaurants = yield getRestaurants(event); console.log('restaurants' + '-----' + restaurants);
   let dayOfWeek = days[new Date().getDay()];
 
   let view = {
@@ -59,9 +63,20 @@ module.exports.handler = co.wrap(function* (event, context) {
 
   let html = Mustache.render(template, view);
 
+  let resp = {
+    statusCode: 200,
+    body: html,
+    headers: {
+      'Content-Type': 'text/html; charset=UTF-8'
+    }
+  };
+
+  //console.log('resp' + '-----' + JSON.stringify(resp));
+
   return {
     statusCode: 200,
     body: html,
+    data: restaurants,
     headers: {
       'Content-Type': 'text/html; charset=UTF-8'
     }

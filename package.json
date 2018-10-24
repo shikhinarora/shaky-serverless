@@ -4,22 +4,29 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "integration-test": "./node_modules/.bin/mocha tests/test_cases --reporter spec"
     },
     "author": "shikhin",
     "license": "ISC",
     "dependencies": {
         "aws-sdk": "^2.340.0",
         "aws4": "^1.8.0",
+        "awscred": "^1.4.1",
         "bluebird": "^3.5.2",
         "co": "^4.6.0",
         "mustache": "^3.0.0",
+        "lodash": "^4.17.11",
         "serverless-pseudo-parameters": "^2.2.0",
         "superagent": "^4.0.0-beta.5",
         "superagent-promise": "^1.1.0"
     },
     "devDependencies": {
         "aws-sdk": "^2.340.0",
+        "awscred": "^1.4.1",
+        "chai": "^4.2.0",
+        "cheerio": "^1.0.0-rc.2",
+        "lodash": "^4.17.11",
+        "mocha": "^5.2.0",
         "mustache": "^3.0.0",
         "serverless-pseudo-parameters": "^2.2.0",
         "superagent": "^4.0.0-beta.5",
