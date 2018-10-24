@@ -22,6 +22,10 @@ plugins:
 
 provider:
   name: aws
+  # apiKeys: 
+  #   - shaky-admin
+  # apiGateway:
+  #   apiKeySourceType: HEADER
   runtime: nodejs8.10
   # stage: dev
   # region: #{AWS::Region}
