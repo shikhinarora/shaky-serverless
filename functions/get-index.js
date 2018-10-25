@@ -76,9 +76,8 @@ module.exports.handler = co.wrap(function* (event, context) {console.log('functi
   return {
     statusCode: 200,
     body: html,
-    data: restaurants,
     headers: {
-      'Content-Type': 'text/html; charset=UTF-8'
+      'content-type': 'text/html; charset=UTF-8'
     }
   };
 
