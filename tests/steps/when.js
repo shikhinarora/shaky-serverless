@@ -60,6 +60,11 @@ let viaHttp = co.wrap(function* (relPath, method, opts) {
       signHttpRequest(url, httpReq);
     }
 
+    let authHeader = _.get(opts, "auth");
+    if (authHeader) {
+        httpReq.set('Authorization', authHeader);
+    }
+
     let res = yield httpReq;
     return respondFrom(res);
   } catch (err) {
@@ -87,7 +92,10 @@ let viaHandler = (event, functionName) => {
         let contentType = _.get(response, 'headers.content-type', 'application/json');
         if (response.body && contentType === 'application/json') {
           response.body = JSON.parse(response.body);
-        }
+        } 
+        // else {
+        //     response.text = JSON.parse(response.text);  
+        // }
 
         resolve(response);
       }
@@ -115,13 +123,14 @@ let we_invoke_get_restaurants = co.wrap(function* () {
   return res;
 });
 
-let we_invoke_search_restaurants = co.wrap(function* (theme) {
+let we_invoke_search_restaurants = co.wrap(function* (user, theme) {
   let body = JSON.stringify({ theme });
+  let auth = user.idToken;console.log('auth' + '-----' + auth);
 
   let res = 
     mode === 'handler'
       ? viaHandler({ body }, 'search-restaurants')
-      : viaHttp('restaurants/search', 'POST', { body })
+      : viaHttp('restaurants/search', 'POST', { body, auth })
 
   return res;
 });

@@ -44,6 +44,8 @@ let an_authenticated_user = function* () {
       PASSWORD: password
     }
   };
+
+  console.log('test user' + '-----' + 'about to update password' + JSON.stringify(req));
   let resp = yield cognito.adminInitiateAuth(req).promise();
 
   console.log(`[${username}] - initialised auth flow`);

@@ -7,7 +7,7 @@ const init = require('../steps/init').init;
 const cheerio = require('cheerio');
 
 describe(`When we invoke the GET / endpoint`, co.wrap(function* () {
-  //this.timeout(0);
+    this.timeout(8000);
 
   console.log('before' + '-----' + 'init');
   before(co.wrap(function* () {

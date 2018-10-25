@@ -47,7 +47,7 @@ function* getRestaurants(event) {
   return (yield httpReq).body;
 }
 
-module.exports.handler = co.wrap(function* (event, context) {console.log('function' + '-----' + 'start');
+module.exports.handler = co.wrap(function* (event, context, callback) {console.log('function' + '-----' + 'start');
   let template = yield loadHtml();  
   let restaurants = yield getRestaurants(event); console.log('restaurants' + '-----' + restaurants);
   let dayOfWeek = days[new Date().getDay()];
@@ -67,19 +67,29 @@ module.exports.handler = co.wrap(function* (event, context) {console.log('functi
     statusCode: 200,
     body: html,
     headers: {
-      'Content-Type': 'text/html; charset=UTF-8'
+      'content-type': 'text/html; charset=UTF-8'
     }
   };
 
   //console.log('resp' + '-----' + JSON.stringify(resp));
 
-  return {
+  // return {
+  //   statusCode: 200,
+  //   body: html,
+  //   headers: {
+  //     'content-type': 'text/html; charset=UTF-8'
+  //   }
+  // };
+
+  const response = {
     statusCode: 200,
-    body: html,
-    headers: {
-      'content-type': 'text/html; charset=UTF-8'
-    }
+      body: html,
+      headers: {
+        'content-type': 'text/html; charset=UTF-8'
+      }
   };
+
+  callback(null, response);
 
   // Use this code if you don't use the http event with the LAMBDA-PROXY integration
   // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
