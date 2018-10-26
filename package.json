@@ -13,6 +13,7 @@
         "aws4": "^1.8.0",
         "awscred": "^1.4.1",
         "bluebird": "^3.5.2",
+        "chance": "^1.0.13",
         "co": "^4.6.0",
         "mustache": "^3.0.0",
         "superagent": "^4.0.0-beta.5",

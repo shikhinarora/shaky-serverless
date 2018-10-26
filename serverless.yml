@@ -104,21 +104,21 @@ functions:
     environment:
       restaurants_table: restaurants
 
-# resources:
-#   Resources:
-#     restaurantsTable:
-#       Type: AWS::DynamoDB::Table
-#       Properties:
-#         TableName: restaurants
-#         AttributeDefinitions:
-#           - AttributeName: name
-#             AttributeType: S
-#         KeySchema:
-#           - AttributeName: name
-#             KeyType: HASH
-#         ProvisionedThroughput:
-#           ReadCapacityUnits: 1
-#           WriteCapacityUnits: 1
+resources:
+  Resources:
+    restaurantsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: restaurants
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

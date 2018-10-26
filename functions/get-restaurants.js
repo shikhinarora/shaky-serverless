@@ -12,8 +12,8 @@ function* getRestaurants(count) {
         TableName: tableName,
         Limit: count
     };
-    
-    let resp = yield dynamodb.scan(req).promise();
+    console.log('req' + '-----' + req);
+    let resp = yield dynamodb.scan(req).promise();console.log('resp' + '-----' + resp);
     return resp.Items;
 }
 
