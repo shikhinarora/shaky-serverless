@@ -7,7 +7,7 @@ const Mustache = require('mustache');
 const http = require('superagent-promise')(require('superagent'), Promise);
 const aws4 = require('aws4');
 const URL = require('url');
-const awscred = Promise.promisifyAll(require('awscred'));
+const awscred = Promise.promisifyAll(require("awscred"));
 
 const awsRegion = process.env.AWS_REGION;
 const cognitoUserPoolId = process.env.cognito_user_pool_id;
@@ -55,9 +55,9 @@ function* getRestaurants(event) {
   return (yield httpReq).body;
 }
 
-module.exports.handler = co.wrap(function* (event, context, callback) {console.log('function' + '-----' + 'start');
+module.exports.handler = co.wrap(function* (event, context, callback) {
   let template = yield loadHtml();  
-  let restaurants = yield getRestaurants(event); console.log('restaurants' + '-----' + restaurants);
+  let restaurants = yield getRestaurants(event);
   let dayOfWeek = days[new Date().getDay()];
 
   let view = {
@@ -70,24 +70,6 @@ module.exports.handler = co.wrap(function* (event, context, callback) {console.l
   };
 
   let html = Mustache.render(template, view);
-
-  let resp = {
-    statusCode: 200,
-    body: html,
-    headers: {
-      'content-type': 'text/html; charset=UTF-8'
-    }
-  };
-
-  //console.log('resp' + '-----' + JSON.stringify(resp));
-
-  // return {
-  //   statusCode: 200,
-  //   body: html,
-  //   headers: {
-  //     'content-type': 'text/html; charset=UTF-8'
-  //   }
-  // };
 
   const response = {
     statusCode: 200,

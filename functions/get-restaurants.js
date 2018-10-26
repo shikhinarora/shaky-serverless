@@ -4,7 +4,7 @@ const co = require('co');
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const defaultResults = process.env.defaultResults || 10;
+const defaultResults = process.env.defaultResults || 8;
 const tableName = process.env.restaurants_table;
 
 function* getRestaurants(count) {
@@ -12,7 +12,7 @@ function* getRestaurants(count) {
         TableName: tableName,
         Limit: count
     };
-
+    
     let resp = yield dynamodb.scan(req).promise();
     return resp.Items;
 }
