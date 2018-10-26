@@ -24,8 +24,12 @@ let init = co.wrap(function* () {
 
     process.env.AWS_ACCESS_KEY_ID = cred.accessKeyId;
     process.env.AWS_SECRET_ACCESS_KEY = cred.secretAccessKey;
+
+    if (cred.sessionToken) {
+      process.env.AWS_SESSION_TOKEN = cred.sessionToken;
+    }
   }
-  
+
   console.log('AWS credentials loaded');
 
   initialized = true;
