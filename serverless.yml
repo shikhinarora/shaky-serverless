@@ -131,6 +131,15 @@ functions:
     environment:
       order_events_stream: order-events
 
+  accept-order:
+    handler: functions/accept-order.handler
+    events:
+      - http:
+          path: /orders/accept
+          method: post
+    environment:
+      order_events_stream: order-events
+
 resources:
   Resources:
     restaurantsTable:
