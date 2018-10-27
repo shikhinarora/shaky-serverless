@@ -37,6 +37,12 @@ provider:
     - Effect: Allow
       Action: execute-api:Invoke
       Resource: arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/*/GET/restaurants
+    - Effect: Allow
+      Action: kinesis:PutRecord
+      Resource: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/order-events
+    - Effect: Allow
+      Action: sns:Publish
+      Resource: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification
 
 # you can overwrite defaults here
 #  stage: dev
@@ -80,6 +86,7 @@ functions:
           method: get
     environment:
       restaurants_api: https://y11lsgmirg.execute-api.us-east-1.amazonaws.com/dev/restaurants
+      orders_api: https://y11lsgmirg.execute-api.us-east-1.amazonaws.com/dev/orders
       cognito_user_pool_id: us-east-1_t6dGtNO5S
       cognito_client_id: 12ei7pse8lg8f9dg2ajb31jtf
 
@@ -104,6 +111,26 @@ functions:
     environment:
       restaurants_table: restaurants
 
+  notify-restaurant:
+    handler: functions/notify-restaurant.handler
+    events:
+      - stream:
+          arn: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/order-events
+    environment:
+      order_events_stream: order-events
+      restaurant_notification_topic: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification
+
+  place-order:
+    handler: functions/place-order.handler
+    events:
+      - http:
+          path: /orders
+          method: post
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/us-east-1_t6dGtNO5S
+    environment:
+      order_events_stream: order-events
+
 resources:
   Resources:
     restaurantsTable:
@@ -119,6 +146,18 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
+    orderEventsStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: order-events
+        ShardCount: 1
+
+    restaurantNotificationTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: restaurant-notification
+        TopicName: restaurant-notification 
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
