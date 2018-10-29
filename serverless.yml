@@ -9,6 +9,12 @@ plugins:
   - serverless-sam
   - serverless-iam-roles-per-function
 
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  logLevel:
+    prod: WARN
+    default: DEBUG
+
 provider:
   name: aws
   # apiKeys: 
@@ -18,6 +24,8 @@ provider:
   runtime: nodejs8.10
   # stage: dev
   # region: #{AWS::Region}
+  environment:
+    log_level: ${self:custom.logLevel.${self:custom.stage}, self:custom.logLevel.default}
 
 functions:
   get-index:
