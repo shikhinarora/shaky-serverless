@@ -8,6 +8,8 @@ const http = require('superagent-promise')(require('superagent'), Promise);
 const aws4 = require('../lib/aws4');
 const URL = require('url');
 const log = require('../lib/log');
+const middy = require('middy');
+const sampleLogging = require('../middleware/sample-logging');
 
 const awsRegion = process.env.AWS_REGION;
 const cognitoUserPoolId = process.env.cognito_user_pool_id;
@@ -49,7 +51,7 @@ function* getRestaurants(event) {
   return (yield httpReq).body;
 }
 
-module.exports.handler = co.wrap(function* (event, context, callback) {
+const handler = co.wrap(function* (event, context, callback) {
   yield aws4.init();
 
   let template = yield loadHtml();
@@ -86,3 +88,6 @@ module.exports.handler = co.wrap(function* (event, context, callback) {
   // Use this code if you don't use the http event with the LAMBDA-PROXY integration
   // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 });
+
+module.exports.handler = middy(handler)
+  .use(sampleLogging ({sampleRate: 0.5}));
