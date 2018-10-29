@@ -1,16 +1,3 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
 service: shaky-service # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
@@ -44,6 +31,7 @@ provider:
       Action: sns:Publish
       Resource: 
         - arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification
+        - arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification-retry
         - arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:user-notification
 
 functions:
@@ -88,6 +76,8 @@ functions:
     environment:
       order_events_stream: order-events
       restaurant_notification_topic: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification
+      restaurant_notification_retry_topic: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification-retry
+
 
   place-order:
     handler: functions/place-order.handler
@@ -127,6 +117,15 @@ functions:
     environment:
       order_events_stream: order-events
 
+  retry-notify-restaurant:
+    handler: functions/retry-notify-restaurant.handler
+    events:
+      - sns: restaurant-notification-retry
+    environment:
+      order_events_stream: order-events
+      restaurant_notification_topic: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification
+    onError: arn:aws:sns:#{AWS::Region}:#{AWS::AccountId}:restaurant-notification-dlq
+
 resources:
   Resources:
     restaurantsTable:
@@ -154,6 +153,12 @@ resources:
       Properties:
         DisplayName: restaurant-notification
         TopicName: restaurant-notification 
+
+    restaurantNotificationDLQTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: restaurant-notification-dlq
+        TopicName: restaurant-notification-dlq
 
     userNotificationTopic:
       Type: AWS::SNS::Topic
