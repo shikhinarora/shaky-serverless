@@ -5,7 +5,6 @@ const notify = require('../lib/notify');
 const middy = require('middy');
 const sampleLogging = require('../middleware/sample-logging');
 const flushMetrics = require('../middleware/flush-metrics');
-const cloudwatch = require('./cloudwatch');
 
 const handler = co.wrap(function* (event, context, cb) {
   let order = JSON.parse(event.Records[0].Sns.Message);
